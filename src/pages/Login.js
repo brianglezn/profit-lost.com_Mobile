@@ -54,7 +54,7 @@ function Login() {
             />
             <TouchableOpacity style={styles.submitContainer} onPress={handleSubmit} disabled={isLoading}>
                 {isLoading ? (
-                    <ActivityIndicator size="small" color="#fe6f14" />
+                    <ActivityIndicator size="small" color="#fff" />
                 ) : (
                     <Text style={styles.buttonText}>Let's go!</Text>
                 )}
