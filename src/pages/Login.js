@@ -26,11 +26,11 @@ function Login() {
                 navigation.navigate('Movements');
             } else {
                 console.error('Failed to login');
-                Alert.alert("Error de inicio de sesión", "Correo o contraseña incorrectos");
+                Alert.alert("Login error", "Incorrect email or password");
             }
         } catch (error) {
             console.error('There was an error logging in', error);
-            Alert.alert("Error", "Hubo un problema al intentar iniciar sesión");
+            Alert.alert("Error", "There was a problem trying to log in");
         }
 
         setIsLoading(false);
@@ -52,7 +52,7 @@ function Login() {
                 onChangeText={setPassword}
                 secureTextEntry={true}
             />
-            <TouchableOpacity onPress={handleSubmit} disabled={isLoading}>
+            <TouchableOpacity style={styles.submitContainer} onPress={handleSubmit} disabled={isLoading}>
                 {isLoading ? (
                     <ActivityIndicator size="small" color="#fe6f14" />
                 ) : (
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: '5%',
     },
     input: {
-        backgroundColor: '#f7f7f7',
+        backgroundColor: '#fff',
         width: '70%',
         marginBottom: '6%',
         borderRadius: 10,
@@ -80,15 +80,17 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         elevation: 4,
         shadowColor: '#171A1F',
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.15,
-        shadowRadius: 2,
+        shadowRadius: 5,
     },
-    buttonText: {
+    submitContainer: {
         backgroundColor: '#fe6f14',
         color: '#f7f7f7',
         padding: '3%',
+        width: '50%',
         borderRadius: 10,
+        borderWidth: 0,
         textAlign: 'center',
         fontWeight: 'bold',
         elevation: 4,
@@ -98,7 +100,11 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         opacity: 0.8,
         marginTop: 12,
-        width: '70%',
+    },
+    buttonText: {
+        color: '#f7f7f7',
+        textAlign: 'center',
+        fontWeight: 'bold',
     },
 });
 
