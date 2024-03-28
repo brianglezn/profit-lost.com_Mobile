@@ -1,11 +1,10 @@
-// Register.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Register = () => {
+const AnnualReport = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>REGISTER</Text>
+      <Text>Esta es la pantalla de AnnualReport</Text>
     </View>
   );
 };
@@ -17,12 +16,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f7f7f7',
   },
-  title: {
-    fontSize: 45,
-    fontWeight: 'bold',
-    color: '#fe6f14',
-    marginBottom: 50,
-  },
 });
 
-export default Register;
+export default AnnualReport;

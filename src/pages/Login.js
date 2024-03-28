@@ -3,11 +3,15 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator,
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
+import { useAuth } from '../context/AuthContext';
+
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
     const navigation = useNavigation();
+    const { setIsLoggedIn } = useAuth();
 
     const handleSubmit = async () => {
         setIsLoading(true);
@@ -19,11 +23,15 @@ function Login() {
                 },
                 body: JSON.stringify({ email, password }),
             });
-
+    
             const data = await response.json();
             if (response.ok) {
                 await AsyncStorage.setItem('token', data.token);
-                navigation.navigate('Movements');
+                setIsLoggedIn(true);
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'DashBoard' }],
+                });
             } else {
                 console.error('Failed to login');
                 Alert.alert("Login error", "Incorrect email or password");
@@ -32,12 +40,13 @@ function Login() {
             console.error('There was an error logging in', error);
             Alert.alert("Error", "There was a problem trying to log in");
         }
-
+    
         setIsLoading(false);
     };
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>LOG IN</Text>
             <TextInput
                 style={styles.input}
                 placeholder="E-mail"
@@ -70,6 +79,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: '10%',
         paddingHorizontal: '5%',
+    },
+    title: {
+        fontSize: 45,
+        fontWeight: 'bold',
+        color: '#fe6f14',
+        marginBottom: 50,
     },
     input: {
         backgroundColor: '#fff',
