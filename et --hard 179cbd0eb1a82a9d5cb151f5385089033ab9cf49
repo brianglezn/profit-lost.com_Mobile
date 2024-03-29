@@ -1,0 +1,47 @@
+[33mcommit 179cbd0eb1a82a9d5cb151f5385089033ab9cf49[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: brianglezn <119687340+brianglezn@users.noreply.github.com>
+Date:   Thu Mar 28 18:51:08 2024 +0100
+
+    28/03/24 *2
+    
+    DashHome principio
+
+[33mcommit 17ac1a23516bd283dbbbeeab069ffb1fa732077d[m
+Author: brianglezn <119687340+brianglezn@users.noreply.github.com>
+Date:   Thu Mar 28 17:15:59 2024 +0100
+
+    28/03/24
+    
+    Navegación entre componentes OK
+    
+    Login OK con AuthProvider
+    
+    userAccount (+logout) y Settings OK
+
+[33mcommit 6f8655640dc49bc3a61aff0d11d12a5b2cd19b71[m
+Author: brianglezn <119687340+brianglezn@users.noreply.github.com>
+Date:   Wed Mar 27 20:06:35 2024 +0100
+
+    27/03/24 *3
+    
+    Movemens accesible
+
+[33mcommit 944160fa03e7f1c0aef8e9b2d4d957af9038ad9c[m
+Author: brianglezn <119687340+brianglezn@users.noreply.github.com>
+Date:   Wed Mar 27 20:04:28 2024 +0100
+
+    27/03/24 *2
+    
+    Ajustes de css al login
+
+[33mcommit 77caae7f9ed77552d77c335bcf7ee5145b769dad[m
+Author: brianglezn <119687340+brianglezn@users.noreply.github.com>
+Date:   Wed Mar 27 19:59:43 2024 +0100
+
+    27/03/24
+    
+    Primer commit de la app mobil
+    
+    App OK
+    Home OK
+    Login OK

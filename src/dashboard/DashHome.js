@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -20,13 +20,40 @@ const getLast6MonthsLabels = () => {
 
 const DashHome = () => {
 
+    const ActionButton = ({ icon, text }) => (
+        <View style={styles.actionButton}>
+            <TouchableOpacity style={styles.buttonIcon} >
+                <Icon name={icon} size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.buttonText}>{text}</Text>
+        </View>
+    );
+
+    const MovementItem = ({ name, Value, date }) => {
+        const isPositive = Value > 0;
+
+        return (
+            <View style={styles.movementItem}>
+                <Icon
+                    name={isPositive ? "arrow-upward" : "arrow-downward"}
+                    size={24}
+                    color={isPositive ? "green" : "red"}
+                    style={styles.movementIcon}
+                />
+                <View style={styles.movementDetails}>
+                    <Text style={styles.movementName}>{name}</Text>
+                    <Text style={styles.movementDate}>{date}</Text>
+                </View>
+                <Text style={[styles.movementValue, { color: isPositive ? "green" : "red" }]}>
+                    {Value}€
+                </Text>
+            </View>
+        );
+    };
+
     return (
         <View style={styles.container}>
             <ScrollView style={styles.scrollContainer}>
-                <View style={styles.balanceContainer}>
-                    <Text style={styles.balanceTitle}>Total Balance</Text>
-                    <Text style={styles.balance}>€1,840</Text>
-                </View>
                 <View style={styles.chartContainer}>
                     <LineChart
                         data={{
@@ -84,52 +111,20 @@ const DashHome = () => {
 
                 <View style={styles.widgetContainer}>
                     <View style={styles.widget}>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
+                        <Text style={styles.widgetTitle}>Month Expenses</Text>
+                        <View style={styles.contentCenter}>
+                            <Text style={styles.widgetContent}>- 500€</Text>
+                        </View>
                     </View>
                     <View style={styles.widget}>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
-                        <Text style={styles.balanceTitle}>Total Balance</Text>
+                        <Text style={styles.widgetTitle}>Total Balance</Text>
+                        <View style={styles.contentCenter}>
+                            <Text style={styles.widgetContent}>8,840€</Text>
+                        </View>
                     </View>
                 </View>
+
             </ScrollView>
-        </View>
-    );
-};
-
-const ActionButton = ({ icon, text }) => (
-    <View style={styles.actionButton}>
-        <TouchableOpacity style={styles.buttonIcon} >
-            <Icon name={icon} size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.buttonText}>{text}</Text>
-    </View>
-);
-
-const MovementItem = ({ name, Value, date }) => {
-    const isPositive = Value > 0;
-
-    return (
-        <View style={styles.movementItem}>
-            <Icon
-                name={isPositive ? "arrow-upward" : "arrow-downward"}
-                size={24}
-                color={isPositive ? "green" : "red"}
-                style={styles.movementIcon}
-            />
-            <View style={styles.movementDetails}>
-                <Text style={styles.movementName}>{name}</Text>
-                <Text style={styles.movementDate}>{date}</Text>
-            </View>
-            <Text style={[styles.movementValue, { color: isPositive ? "green" : "red" }]}>
-                {Value}€
-            </Text>
         </View>
     );
 };
@@ -142,22 +137,8 @@ const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
     },
-    balanceContainer: {
-        alignItems: 'center',
-        marginVertical: 20,
-    },
-    balanceTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: 'black',
-    },
-    balance: {
-        fontSize: 36,
-        fontWeight: 'bold',
-        color: 'black',
-        marginVertical: 5,
-    },
     chartContainer: {
+        marginTop: 30,
         alignSelf: 'center',
         backgroundColor: 'white',
         borderRadius: 16,
@@ -237,12 +218,27 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         margin: '2.5%',
         padding: 10,
+        height: 170,
         width: '45%',
         elevation: 2,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 5,
+    },
+    contentCenter: {
+        flex: 1,
+        justifyContent: 'center',
+        width: '100%',
+    },
+    widgetTitle: {
+        fontSize: 15,
+        fontWeight: '600',
+    },
+    widgetContent: {
+        fontSize: 25,
+        fontWeight: '800',
+        textAlign: 'center',
     },
 });
 
