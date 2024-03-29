@@ -1,55 +1,77 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+    View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, ActivityIndicator
+} from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const screenWidth = Dimensions.get('window').width;
 
-const getLast6MonthsLabels = () => {
-    const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-    const now = new Date();
-    let months = [];
-
-    for (let i = 5; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        months.push(monthNames[d.getMonth()]);
-    }
-
-    return months;
-};
-
 const DashHome = () => {
+    const [dataAccounts, setDataAccounts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const ActionButton = ({ icon, text }) => (
-        <View style={styles.actionButton}>
-            <TouchableOpacity style={styles.buttonIcon} >
-                <Icon name={icon} size={24} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.buttonText}>{text}</Text>
-        </View>
-    );
+    useEffect(() => {
+        const fetchAllData = async () => {
+            setLoading(true);
+            const token = await AsyncStorage.getItem('token');
+            try {
+                const response = await fetch(`https://profit-lost-backend.onrender.com/accounts/all`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-    const MovementItem = ({ name, Value, date }) => {
-        const isPositive = Value > 0;
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
-        return (
-            <View style={styles.movementItem}>
-                <Icon
-                    name={isPositive ? "arrow-upward" : "arrow-downward"}
-                    size={24}
-                    color={isPositive ? "green" : "red"}
-                    style={styles.movementIcon}
-                />
-                <View style={styles.movementDetails}>
-                    <Text style={styles.movementName}>{name}</Text>
-                    <Text style={styles.movementDate}>{date}</Text>
-                </View>
-                <Text style={[styles.movementValue, { color: isPositive ? "green" : "red" }]}>
-                    {Value}€
-                </Text>
-            </View>
-        );
+                const allAccountsData = await response.json();
+                setDataAccounts(allAccountsData);
+            } catch (error) {
+                console.error('Error fetching all accounts data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAllData();
+    }, []);
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const getLast6MonthsLabels = () => {
+        return Array.from({ length: 6 }, (_, i) => {
+            let date = new Date();
+            date.setMonth(date.getMonth() - i);
+            return monthNames[date.getMonth()];
+        }).reverse();
     };
+
+    const calculateSumLast6Months = () => {
+        let sums = new Array(6).fill(0);
+        let currentDate = new Date();
+
+        dataAccounts.forEach(account => {
+            account.records.forEach(record => {
+                let recordDate = new Date(record.year, monthNames.indexOf(record.month), 1);
+                let monthsDiff = currentDate.getMonth() - recordDate.getMonth() +
+                    (12 * (currentDate.getFullYear() - recordDate.getFullYear()));
+
+                if (monthsDiff >= 0 && monthsDiff < 6) {
+                    sums[monthsDiff] += record.value;
+                }
+            });
+        });
+
+        return sums.reverse();
+    };
+
+    if (loading) {
+        return <View style={styles.center}><ActivityIndicator size="large" color="#fe6f14" /></View>;
+    }
 
     return (
         <View style={styles.container}>
@@ -58,38 +80,12 @@ const DashHome = () => {
                     <LineChart
                         data={{
                             labels: getLast6MonthsLabels(),
-                            datasets: [
-                                {
-                                    data: [
-                                        Math.random() * 10000,
-                                        Math.random() * 10000,
-                                        Math.random() * 10000,
-                                        Math.random() * 10000,
-                                        Math.random() * 10000,
-                                        Math.random() * 10000
-                                    ]
-                                }
-                            ]
+                            datasets: [{ data: calculateSumLast6Months() }]
                         }}
-                        width={screenWidth * 0.95}
+                        width={screenWidth}
                         height={220}
                         yAxisLabel="€"
-                        yAxisInterval={1}
-                        chartConfig={{
-                            backgroundGradientFrom: "#ff8e38",
-                            backgroundGradientTo: "#ffb771",
-                            decimalPlaces: 2,
-                            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                            style: {
-                                borderRadius: 16,
-                            },
-                            propsForDots: {
-                                r: "6",
-                                strokeWidth: "2",
-                                stroke: "#fff"
-                            },
-                        }}
+                        chartConfig={chartConfig}
                         bezier
                         style={styles.chartStyle}
                     />
@@ -125,6 +121,49 @@ const DashHome = () => {
                 </View>
 
             </ScrollView>
+        </View>
+    );
+};
+
+const chartConfig = {
+    backgroundColor: '#e26a00',
+    backgroundGradientFrom: '#fb8c00',
+    backgroundGradientTo: '#ffa726',
+    decimalPlaces: 2,
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    style: { borderRadius: 16 },
+    propsForDots: { r: "6", strokeWidth: "2", stroke: "#ffa726" },
+};
+
+
+const ActionButton = ({ icon, text }) => (
+    <View style={styles.actionButton}>
+        <TouchableOpacity style={styles.buttonIcon} >
+            <Icon name={icon} size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.buttonText}>{text}</Text>
+    </View>
+);
+
+const MovementItem = ({ name, Value, date }) => {
+    const isPositive = Value > 0;
+
+    return (
+        <View style={styles.movementItem}>
+            <Icon
+                name={isPositive ? "arrow-upward" : "arrow-downward"}
+                size={24}
+                color={isPositive ? "green" : "red"}
+                style={styles.movementIcon}
+            />
+            <View style={styles.movementDetails}>
+                <Text style={styles.movementName}>{name}</Text>
+                <Text style={styles.movementDate}>{date}</Text>
+            </View>
+            <Text style={[styles.movementValue, { color: isPositive ? "green" : "red" }]}>
+                {Value}€
+            </Text>
         </View>
     );
 };
