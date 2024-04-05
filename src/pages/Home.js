@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+
+import logoPL from '../../assets/LogoPL_mobile.png';
 
 const Home = ({ navigation }) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>PROFIT & LOST</Text>
+            <Image source={logoPL} style={styles.logo} />
             <View style={styles.buttonsRow}>
                 <TouchableOpacity
                     style={[styles.button, styles.buttonLogin]}
@@ -29,6 +31,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f7f7f7',
+    },
+    logo: {
+        width: 200,
+        height: 200,
+        marginBottom: 50,
     },
     title: {
         fontSize: 45,

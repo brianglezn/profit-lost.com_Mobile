@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-    View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, ActivityIndicator
+    View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -68,10 +68,6 @@ const DashHome = () => {
 
         return sums.reverse();
     };
-
-    if (loading) {
-        return <View style={styles.center}><ActivityIndicator size="large" color="#fe6f14" /></View>;
-    }
 
     return (
         <View style={styles.container}>
